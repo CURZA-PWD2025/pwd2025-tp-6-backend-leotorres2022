@@ -1,5 +1,5 @@
-import mysql.connector
-from mysql.connector import Error, errorcode
+import pymysql
+import pymysql.err as pymysql_err
 
 import os
 from dotenv import load_dotenv
@@ -11,8 +11,10 @@ DB_CONFIG = {
     'host': os.getenv("DB_HOST"),
     'user': os.getenv("DB_USER"),
     'password': os.getenv("DB_PASSWORD"),
-    'port': os.getenv("DB_PORT"),
-    'raise_on_warnings': True,
+    'port': int(os.getenv("DB_PORT")),
+    'charset': 'utf8mb4',
+    'cursorclass': pymysql.cursors.DictCursor,
+    'autocommit': False,
 }
 TABLES = {}
 SEEDS = {}
@@ -153,34 +155,30 @@ SEEDS['ARTICULOS_CATEGORIAS'] = (
 
 def create_database(cursor):
     try:
-        cursor.execute(
-            f"CREATE DATABASE {DB_NAME} DEFAULT CHARACTER SET 'utf8'", )
-    except Error as err:
-        if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+        cursor.execute(f"CREATE DATABASE {DB_NAME} DEFAULT CHARACTER SET 'utf8'")
+    except pymysql_err.ProgrammingError as err:
+        if err.args[0] == 1044:  # ER_ACCESS_DENIED_ERROR
             print("Something is wrong with your user name or password")
-        elif err.errno == errorcode.ER_BAD_DB_ERROR:
+        elif err.args[0] == 1007:  # ER_DB_CREATE_EXISTS_ERROR
             print("Database already exists")
         else:
             print(err)
     else:
         print(f"Database {DB_NAME} created successfully.")
 
-
 def create_tables(tables, cursor):
-
     for table_name in tables:
         table_description = tables[table_name]
         try:
             print(f"Creating table {table_name}: ", end="")
             cursor.execute(table_description)
-        except Error as err:
-            if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
+        except pymysql_err.ProgrammingError as err:
+            if err.args[0] == 1050:  # ER_TABLE_EXISTS_ERROR
                 print("already exists.")
             else:
-                print(err.msg)
+                print(err)
         else:
             print("OK")
-
 
 def seeds_tables(seed, cursor):
     for table_name in seed:
@@ -188,27 +186,23 @@ def seeds_tables(seed, cursor):
         try:
             print(f"Seeding table {table_name}: ", end="")
             cursor.executemany(seed_description[0], seed_description[1])
-        except Error as err:
-            if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
-                print("already exists.")
-            else:
-                print(err.msg)
+        except Exception as err:
+            print(err)
         else:
             print("OK")
 
-
-cxn = mysql.connector.connect(**DB_CONFIG)
-cursor = cxn.cursor()
-cursor.close()
+# Crear la base de datos
+cxn = pymysql.connect(**{k: v for k, v in DB_CONFIG.items() if k != 'database'})
+with cxn.cursor() as cursor:
+    create_database(cursor)
 cxn.close()
 
-create_database(cursor)
+# Crear tablas y seedear datos
 CONF_DB = DB_CONFIG.copy()
 CONF_DB['database'] = DB_NAME
-cxn = mysql.connector.connect(**CONF_DB)
-cursor = cxn.cursor()
-create_tables(TABLES, cursor)
-seeds_tables(SEEDS, cursor)
-cxn.commit()
-cursor.close()
+cxn = pymysql.connect(**CONF_DB)
+with cxn.cursor() as cursor:
+    create_tables(TABLES, cursor)
+    seeds_tables(SEEDS, cursor)
+    cxn.commit()
 cxn.close()
