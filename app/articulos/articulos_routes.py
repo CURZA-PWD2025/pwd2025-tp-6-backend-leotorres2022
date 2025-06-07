@@ -40,3 +40,19 @@ def crear():
         
     except Exception as exc:
          return jsonify({'mensaje': f" error : {str(exc)}"}), 500
+@articulo_bp.route("/articulos/<int:id>", methods=["PUT"])
+def modificar_articulo(id):
+    data = request.get_json()
+    result = ArticulosController.update(id, data)
+    if result:
+        return {"mensaje": "Artículo actualizado correctamente"}, 200
+    else:
+        return {"mensaje": "Error al actualizar el artículo"}, 500     
+@articulo_bp.route("/articulos/<int:id>", methods=["DELETE"])
+def eliminar_articulo(id):
+    result = ArticulosController.eliminar(id)
+    if result:
+        return {"mensaje": "Artículo eliminado correctamente"}, 200
+    else:
+        return {"mensaje": "Error al eliminar el artículo"}, 500
+         
