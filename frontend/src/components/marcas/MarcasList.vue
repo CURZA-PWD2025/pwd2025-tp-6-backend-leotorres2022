@@ -1,4 +1,5 @@
 <template>
+  <h1 class="titulo">Lista de Marcas</h1>
 <div class="crear-container">
     <router-link :to="{name:'marcas_create'}">CREAR</router-link>
   </div>
@@ -43,6 +44,10 @@ async function eliminar(id:number) {
 </script>
 
 <style scoped>
+.titulo {
+  text-align: center;
+  margin-top: 1rem;
+}
 .crear-container {
   display: flex;
   justify-content: center;

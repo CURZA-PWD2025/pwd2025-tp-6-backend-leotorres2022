@@ -3,7 +3,7 @@ from .articulos_controller import ArticulosController
 
 articulo_bp=Blueprint("articulo", __name__)
 
-@articulo_bp.route("/articulos/")
+@articulo_bp.route("/articulos/", methods=['GET', 'OPTIONS'])
 def get_all():
     try:
         articulos = ArticulosController.get_all()
@@ -26,7 +26,7 @@ def get_one(id):
         
     except Exception as exc:
          return jsonify({'mensaje': f" error : {str(exc)}"}), 500  
-@articulo_bp.route("/articulos/", methods=['POST'])
+@articulo_bp.route("/articulos/", methods=['POST', 'OPTIONS'])
 def crear():
     try:
         data = request.get_json()
@@ -40,8 +40,10 @@ def crear():
         
     except Exception as exc:
          return jsonify({'mensaje': f" error : {str(exc)}"}), 500
-@articulo_bp.route("/articulos/<int:id>", methods=["PUT"])
+@articulo_bp.route("/articulos/<int:id>", methods=["PUT", "OPTIONS"])
 def modificar_articulo(id):
+    if request.method == "OPTIONS":
+        return jsonify({'mensaje': 'ok'}), 200
     data = request.get_json()
     result = ArticulosController.update(id, data)
     if result:

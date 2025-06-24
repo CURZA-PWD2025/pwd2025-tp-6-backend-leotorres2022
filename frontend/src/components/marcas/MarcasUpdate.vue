@@ -23,7 +23,7 @@ onMounted(async () => {
   const id = route.params.id
   console.log('ID de la marca a editar:', id)
 const encontrada= marcas.value.find(marca => marca.id == parseInt(id))
-marca.value =  encontrada ?? { nombre: '' } 
+marca.value =  encontrada ?? { nombre: '' }
 })
 
 const editar = async () => {
@@ -32,6 +32,7 @@ const editar = async () => {
   } else {
     const response = await update(marca.value);
     alert('Marca actualizada correctamente');
+    marca.value.nombre= ''
     console.log(response);
   }
 };

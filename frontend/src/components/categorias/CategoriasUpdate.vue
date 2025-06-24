@@ -22,7 +22,7 @@ const {update} = UseCategoriasStore()
 onMounted(async () => {
   const id = route.params.id
   console.log('ID de la marca a editar:', id)
-const encontrada= categorias.value.find(categoria => categoria.id == parseInt(id))
+const encontrada= categorias.value.find(categoria => categoria.id == parseInt(id as string));
 categoria.value =  encontrada ?? { nombre: '' }
 })
 
@@ -32,6 +32,7 @@ const editar = async () => {
   } else {
     const response = await update(categoria.value);
     alert('Categoria actualizada correctamente');
+    categoria.value.nombre= ''
     console.log(response);
   }
 };

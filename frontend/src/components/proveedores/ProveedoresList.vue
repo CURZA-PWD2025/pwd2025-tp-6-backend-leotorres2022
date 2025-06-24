@@ -1,24 +1,32 @@
 <template>
-  <h1 class="titulo">Lista de Categorias</h1>
+    <h1 class="titulo">Lista de Proveedores</h1>
   <div class="crear-container">
-  <router-link :to="{name:'categorias_create'}">CREAR</router-link>
+
+  <router-link :to="{name:'proveedores_create'}">CREAR</router-link>
+
 </div>
   <table>
     <thead>
       <tr>
         <th>id</th>
         <th>nombre</th>
+        <th>direccion</th>
+        <th>telefono</th>
+        <th>email</th>
         <th>acciones</th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="categoria in categorias" :key="categoria.id">
-        <td>{{ categoria.id }}</td>
-        <td>{{ categoria.nombre }}</td>
+      <tr v-for="proveedor in proveedores" :key="proveedor.id">
+        <td>{{ proveedor.id }}</td>
+        <td>{{ proveedor.nombre }}</td>
+        <td>{{ proveedor.direccion }}</td>
+        <td>{{ proveedor.telefono }}</td>
+        <td>{{ proveedor.email }}</td>
         <td>
-          <router-link :to="{name:'categorias_update',params:{id:categoria.id}}">editar</router-link>
-          <router-link :to="{name:'categorias_show',params:{id:categoria.id}}">mostrar</router-link>
-          <button @click.prevent="eliminar(categoria.id as number)">Eliminar</button>
+          <router-link :to="{name:'proveedores_update',params:{id:proveedor.id}}">editar</router-link>
+          <router-link :to="{name:'proveedores_show',params:{id:proveedor.id}}">mostrar</router-link>
+          <button @click.prevent="eliminar(proveedor.id as number)">Eliminar</button>
         </td>
       </tr>
     </tbody>
@@ -27,9 +35,9 @@
 
 <script setup lang="ts">
 import { onMounted, toRefs } from 'vue'
-import useCategoriasStore from '../../stores/categorias'
-const { categorias } = toRefs(useCategoriasStore())
-const { getAll, destroy } = useCategoriasStore()
+import useProveedoresStore from '../../stores/proveedores'
+const { proveedores } = toRefs(useProveedoresStore())
+const { getAll, destroy } = useProveedoresStore()
 
 onMounted(async () => {
   await getAll()

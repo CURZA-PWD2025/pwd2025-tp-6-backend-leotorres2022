@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import marcas_routes from './marcas_routes'
 import HomeView from '../views/HomeView.vue'
 import categorias_routes from './categorias_routes'
+import proveedores_routes from './proveedores_routes'
+import articulos_routes from './articulos_routes'
 
 const routes= [
     {
@@ -11,6 +13,8 @@ const routes= [
     },
 ...marcas_routes,
 ...categorias_routes,
+...proveedores_routes,
+...articulos_routes,
   ]
 
 const router = createRouter({

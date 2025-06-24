@@ -8,7 +8,8 @@ from .articulos.articulos_routes import articulo_bp
 
 def create_app():
     app= Flask(__name__)
-    CORS(app)  
+    CORS(app, supports_credentials=True)  
+    CORS(articulo_bp)
     app.register_blueprint(categoria_bp)
     app.register_blueprint(marca_bp)
     app.register_blueprint(proveedor_bp)

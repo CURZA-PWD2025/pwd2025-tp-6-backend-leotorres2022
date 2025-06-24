@@ -2,7 +2,7 @@
   <div class="home-container">
     <h1>Bienvenidos a la página de Artículos e Insumos Informáticos</h1>
     <p class="subtitle">
-      Gestioná marcas, categorías y más desde el menú de la izquierda.
+      Gestioná marcas, categorías, proveedores y los artículos desde el menú de la izquierda.
     </p>
   </div>
 </template>
